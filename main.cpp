@@ -5,6 +5,18 @@
 
 #include <gps.h>
 
+void dsleep(double seconds)
+{
+  double whole   = floor(seconds);
+  double decimal = seconds - whole;
+  struct timespec tsp;
+  
+  tsp.tv_sec = (time_t)(floor);
+  tsp.tv_nsec = (long)(decimal * (1000000000.0));
+  
+  nanosleep(&tsp, 0);
+}
+
 int main(int argc, char **argv)
 {
   char *gpsd_server_a, *gpsd_server_b;
@@ -54,6 +66,8 @@ int main(int argc, char **argv)
     {
       printf("jsa = %s\n", jsa);
     }
+
+    dsleep(0.05);
   }
 
   gps_stream(&gda, WATCH_DISABLE, NULL);

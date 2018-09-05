@@ -18,6 +18,25 @@ void dsleep(double seconds)
   nanosleep(&tsp, 0);
 }
 
+double vertical_distance(struct gps_data_t *first, struct gps_data_t *second)
+{
+  return fabs(first->fix.altitude - second->fix.altitude);
+}
+
+double horizontal_distance(struct gps_data_t *first, struct gps_data_t *second)
+{
+  return earth_distance(
+            first ->fix.latitude, first ->fix.longitude,
+            second->fix.latitude, second->fix.longitude);
+}
+
+double position_distance(struct gps_data_t *first, struct gps_data_t *second)
+{
+  double hh = horizontal_distance(first, second);
+  double vv = vertical_distance  (first, second);
+  return sqrt((hh*hh) + (vv*vv));
+}
+
 int main(int argc, char **argv)
 {
   char *gpsd_server_a, *gpsd_server_b;
@@ -71,12 +90,10 @@ int main(int argc, char **argv)
     {
       if(gda.fix.time == gdb.fix.time)
       {
-        dAlt[0] = fabs(gda.fix.altitude - gdb.fix.altitude);
-        dPos[0] = earth_distance(
-            gda.fix.latitude, gda.fix.longitude,
-            gdb.fix.latitude, gda.fix.longitude
-            );
-        dBoth[0] = sqrt((dAlt[0]*dAlt[0]) + (dPos[0]*dPos[0]));
+        dAlt [0] = vertical_distance  (&gda, &gdb);
+        dPos [0] = horizontal_distance(&gda, &gdb);
+        dBoth[0] = position_distance  (&gda, &gdb);
+//      dBoth[0] = sqrt((dAlt[0]*dAlt[0]) + (dPos[0]*dPos[0]));
 
         printf("tm:%.0f", gda.fix.time);
         printf(" dAlt: %.2f(%.2f-%.2f)", dAlt [0],dAlt [1],dAlt [2]);

@@ -1,7 +1,7 @@
 
 PROGRAM = gpsdiff
 
-CSOURCES = main.cpp
+CSOURCES = main.c
 COBJECTS = $(CSOURCES:.c=.o)
 CFLAGS   = $(COPT) $(CDEF) $(CINC)
 COPT     = -g
@@ -11,7 +11,7 @@ CINC     =
 LDFLAGS  = $(LDOPT) $(LDDIR) $(LDLIB)
 LDOPT    = 
 LDDIR    = 
-LDLIB    = -lgps
+LDLIB    = -lgps -lm
 
 all: $(PROGRAM)
 

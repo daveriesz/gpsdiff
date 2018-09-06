@@ -37,6 +37,29 @@ double position_distance(struct gps_data_t *first, struct gps_data_t *second)
   return sqrt((hh*hh) + (vv*vv));
 }
 
+void init_unit(struct gps_data_t *target, struct gps_data_t *source)
+{
+/*  LLANavigationInitialization "$PSRF104,37.3875111,-121.97232,0,96000,237759,1946,12,1*07" */
+  char s[1024];
+  sprintf(s, "$PSRF104,%.7f,%.7f,%.7f,%d,%d,%d,%d,%d*%d%c%c",
+    source->fix.latitude, source->fix.longitude, source->fix.altitude,
+    0, /* (Hz ) Clock Offset of the Evaluation Receiver */
+    0, /* (sec) GPS Time of Week */
+    0, /* (   ) Etended GPS Week Number (1024 added) */
+    0, /* (   ) Channel Count - range 1 to 12 */
+    0, /* (   ) Reset Config */
+    0, /* (   ) checksum */
+    0x0d, 0x0a /* <CR><LF> */
+    );
+/* Reset Config values
+ * 01 : Hot Start              -- All data valid
+ * 02 : Warm Start             -- Ephemeris cleared
+ * 03 : Warm Start (with init) -- Ephemeris cleared, initialization data loaded
+ * 04 : Cold Start             -- Clears all data in memory
+ * 08 : Clear Memory           -- Clears all data in memory and resets receiver back to factory defaults
+ */
+}
+
 int main(int argc, char **argv)
 {
   char *gpsd_server_a, *gpsd_server_b;
